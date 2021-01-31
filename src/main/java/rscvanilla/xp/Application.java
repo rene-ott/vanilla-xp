@@ -1,7 +1,6 @@
 package rscvanilla.xp;
 
-import rscvanilla.xp.models.Player;
-import rscvanilla.xp.repositories.PlayerRepository;
+import rscvanilla.xp.crawler.services.HighScoreSyncroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -11,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class Application implements CommandLineRunner {
 
 	@Autowired
-	private PlayerRepository repository;
+	private HighScoreSyncroService highScoreSyncroService;
 
 	public static void main(String[] args) {
 		SpringApplication.run(Application.class, args);
@@ -19,8 +18,6 @@ public class Application implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) {
-		var player = new Player();
-		player.setName("Rene");
-		repository.save(player);
+		highScoreSyncroService.synchronizeToDatabase();
 	}
 }

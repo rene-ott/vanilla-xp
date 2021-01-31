@@ -1,7 +1,6 @@
-package rscvanilla.xp.controllers;
+package rscvanilla.xp.web.controllers;
 
-import rscvanilla.xp.models.Player;
-import rscvanilla.xp.repositories.PlayerRepository;
+import rscvanilla.xp.web.repositories.PlayerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +18,12 @@ public class HelloWorldController {
 
     @RequestMapping("/{name}")
     public String index(@PathVariable String name) {
+        var player = repository.findByName("Rene");
+        var d = player.getExperience();
+        for (var item : d) {
+            var f = item.getAttack();
+        }
 
-        return repository.findByName(name).orElseGet(() -> new Player(name)).getName();
+        return "Missing Player";
     }
 }
