@@ -7,16 +7,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import rscvanilla.xp.crawler.CrawlerException;
-import rscvanilla.xp.crawler.models.PlayerListTable;
-import rscvanilla.xp.crawler.parsers.PlayerListTableParser;
+import rscvanilla.xp.crawler.models.PlayerOverallRankTable;
+import rscvanilla.xp.crawler.models.PlayerOverallRankTableRow;
+import rscvanilla.xp.crawler.parsers.PlayerOverallRankTableParser;
 
 @Service
-public class PlayerListTableParserImpl implements PlayerListTableParser {
+public class PlayerOverallRankTableParserImpl implements PlayerOverallRankTableParser {
 
-    private Logger logger = LoggerFactory.getLogger(PlayerListTableParserImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(PlayerOverallRankTableParserImpl.class);
 
     @Override
-    public PlayerListTable getPlayerListTable(Document document) {
+    public PlayerOverallRankTable getTable(Document document) {
 
         var paginationCtxMessage = "Selecting pagination element from player list table";
         var paginationElement = selectSingleElementFrom(document, "#hiscore .pagination", paginationCtxMessage);
@@ -24,19 +25,39 @@ public class PlayerListTableParserImpl implements PlayerListTableParser {
         var currentPageNumberValue = getCurrentPageNumberValue(paginationElement, paginationCtxMessage);
         var nextPageUrl = getNextPageUrl(paginationElement, paginationCtxMessage);
 
-        var playerListTable = PlayerListTable.builder()
+        var playerListTable = PlayerOverallRankTable.builder()
                 .nextPageUrl(nextPageUrl);
 
         var tableRows = document.select("#hiscore .hiscore_table tr");
 
         for (var rowIndex = 1; rowIndex < tableRows.size(); rowIndex++) {
-            var playerName = getPlayerName(tableRows.get(rowIndex), currentPageNumberValue, rowIndex);
-            var playerIndex = rowIndex * currentPageNumberValue;
-            logger.debug("Crawled player ({}) [{}].", playerIndex, playerName);
-            playerListTable.playerName(playerName);
+            var row = tableRows.get(rowIndex);
+
+            var playerRow = PlayerOverallRankTableRow.builder()
+                .rank(getColumnValue(row, currentPageNumberValue, rowIndex, 1, "Rank"))
+                .player(getColumnValue(row, currentPageNumberValue, rowIndex, 2, "Player"))
+                .level(getColumnValue(row, currentPageNumberValue, rowIndex, 3, "Level"))
+                .xp(getColumnValue(row, currentPageNumberValue, rowIndex, 4, "XP"))
+                .build();
+
+            var playerIndex = ((currentPageNumberValue -1) * tableRows.size() - 1) + rowIndex;
+            logger.debug("Crawled row {}) [rank={}, player={}, level={}, xp={}].", playerIndex, playerRow.getRank(), playerRow.getPlayer(), playerRow.getLevel(), playerRow.getXp());
+            playerListTable.row(playerRow);
         }
 
         return playerListTable.build();
+    }
+
+    private String getColumnValue(Element tableRow, int pageNumber, int rowNumber, int columnNumber, String columnName) {
+        var ctxMessage = String.format("Selecting column [%s] from page [%d] table row [%d]", columnName, pageNumber, rowNumber);
+        var columnElement = selectSingleElementFrom(tableRow, String.format(".col%d a", columnNumber), ctxMessage);
+        var columnElementValue = columnElement.text();
+
+        if (columnElementValue.equals("")) {
+            throw new CrawlerException(ctxMessage, "Missing ["+ columnName +"] for row");
+        }
+
+        return columnElementValue;
     }
 
     private String getPlayerName(Element tableRow, int pageNumber, int row) {

@@ -2,55 +2,44 @@ package rscvanilla.xp.crawler.services.impl;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import rscvanilla.xp.crawler.models.PlayerOverallRankTableRow;
+import rscvanilla.xp.crawler.parsers.PlayerOverallRankTableParser;
 import rscvanilla.xp.crawler.services.HighScoreCrawlerService;
-import rscvanilla.xp.web.models.PlayerExperience;
-import rscvanilla.xp.crawler.parsers.PlayerListTableParser;
 
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class HighScoreCrawlerServiceImpl implements HighScoreCrawlerService {
 
-    private final String baseUrl = "https://www.runescapeclassic.org/hiscore/ranking";
+    private static final String INITIAL_URL = "https://www.runescapeclassic.org/hiscore/ranking/overall";
 
-    @Autowired
-    private final PlayerListTableParser playerListTableParser;
+    private final PlayerOverallRankTableParser playerOverallRankTableParser;
 
-    public HighScoreCrawlerServiceImpl(PlayerListTableParser playerListTableParser) {
-        this.playerListTableParser = playerListTableParser;
+    public HighScoreCrawlerServiceImpl(PlayerOverallRankTableParser playerOverallRankTableParser) {
+        this.playerOverallRankTableParser = playerOverallRankTableParser;
     }
 
-    public List<String> getAllPlayerNamesFromWeb() {
+    public List<PlayerOverallRankTableRow> getAllPlayerNamesFromWeb() {
 
-        var htmlDocument = getDocumentFromUrl(getPlayerListTableUrl());
-        var playerListTable = playerListTableParser.getPlayerListTable(htmlDocument);
+        var htmlDocument = loadDocumentFromURL(INITIAL_URL);
+        var playerListTable = playerOverallRankTableParser.getTable(htmlDocument);
 
-        var playerNames = new ArrayList<>(playerListTable.getPlayerNames());
-        /*
+        var playerNames = new ArrayList<>(playerListTable.getRows());
         while (playerListTable.hasNextPage()) {
-            htmlDocument = getDocumentFromUrl(playerListTable.getNextPageUrl());
-            playerListTable = playerListTableParser.getPlayerListTable(htmlDocument);
-        }*/
+            htmlDocument = loadDocumentFromURL(playerListTable.getNextPageUrl());
+            playerListTable = playerOverallRankTableParser.getTable(htmlDocument);
+            playerNames.addAll(playerListTable.getRows());
+
+            return playerNames;
+        }
 
         return playerNames;
     }
 
-    private String getPlayerListTableUrl() {
-        return String.format("%s/overall", baseUrl);
-    }
-
-    private String getPlayerExperienceTableUrl(String playerName) {
-        var queryStringParams = URLEncoder.encode(playerName, StandardCharsets.UTF_8);
-        return String.format("%s/user=%s", baseUrl, queryStringParams);
-    }
-
-    private Document getDocumentFromUrl(String url) {
+    private Document loadDocumentFromURL(String url) {
         Document doc;
         try {
             doc = Jsoup.connect(url).get();
@@ -59,9 +48,5 @@ public class HighScoreCrawlerServiceImpl implements HighScoreCrawlerService {
             throw new RuntimeException("");
         }
         return doc;
-    }
-
-    public PlayerExperience getPlayerExperience(String name) {
-        return null;
     }
 }

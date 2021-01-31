@@ -7,10 +7,10 @@ import lombok.Singular;
 import java.util.List;
 
 @Builder
-public class PlayerListTable {
+public class PlayerOverallRankTable {
 
     @Getter @Singular
-    private final List<String> playerNames;
+    private final List<PlayerOverallRankTableRow> rows;
 
     public boolean hasNextPage() {
         return !nextPageUrl.equals("");

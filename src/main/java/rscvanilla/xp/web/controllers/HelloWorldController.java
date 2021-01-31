@@ -19,9 +19,8 @@ public class HelloWorldController {
     @RequestMapping("/{name}")
     public String index(@PathVariable String name) {
         var player = repository.findByName("Rene");
-        var d = player.getExperience();
+        var d = player.getExperiences();
         for (var item : d) {
-            var f = item.getAttack();
         }
 
         return "Missing Player";

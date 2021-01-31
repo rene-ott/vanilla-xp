@@ -4,14 +4,15 @@ import org.springframework.stereotype.Component;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Component
 public class SystemTimeImpl implements SystemTime {
 
-    private LocalDateTime time;
+    private final LocalDateTime time;
 
-    protected SystemTimeImpl() {
-        time = LocalDateTime.now(Clock.systemUTC());
+    private SystemTimeImpl() {
+        time = LocalDateTime.now(Clock.systemUTC()).truncatedTo(ChronoUnit.SECONDS);
     }
 
     @Override

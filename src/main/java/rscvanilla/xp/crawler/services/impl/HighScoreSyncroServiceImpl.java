@@ -7,9 +7,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rscvanilla.xp.common.SystemTime;
+import rscvanilla.xp.crawler.models.PlayerOverallRankTableRow;
 import rscvanilla.xp.crawler.services.HighScoreCrawlerService;
 import rscvanilla.xp.crawler.services.HighScoreSyncroService;
 import rscvanilla.xp.web.models.Player;
+import rscvanilla.xp.web.models.PlayerExperience;
 import rscvanilla.xp.web.repositories.PlayerRepository;
 
 import java.util.ArrayList;
@@ -41,46 +43,76 @@ public class HighScoreSyncroServiceImpl implements HighScoreSyncroService {
     public void synchronizeToDatabase() {
         var playersFromWeb = highScoreCrawlerService.getAllPlayerNamesFromWeb()
                 .stream()
-                .map(it -> Player.builder().name(it).build())
+                .map(this::convertToModel)
                 .collect(Collectors.toList());
 
         var playersFromDatabase = ImmutableList.copyOf(playerRepository.findAll());
 
-        var updatablePlayers = new ArrayList<Player>();
+        var transactedPlayers = new ArrayList<Player>();
 
         for (var webPlayer : playersFromWeb) {
             playersFromDatabase.stream()
-                    .filter(dbPlayer -> dbPlayer.hasSameName(webPlayer))
-                    .findFirst()
-                    .ifPresentOrElse(
-                        dbPlayer -> updatePlayer(dbPlayer, updatablePlayers),
-                        () -> createPlayer(webPlayer, updatablePlayers)
-                    );
+                .filter(dbPlayer -> dbPlayer.hasSameName(webPlayer))
+                .findFirst()
+                .ifPresentOrElse(
+                    dbPlayer -> updatePlayer(webPlayer, dbPlayer, transactedPlayers),
+                    () -> createPlayer(webPlayer, transactedPlayers)
+                );
         }
 
         for (var dbPlayer : playersFromDatabase) {
             playersFromWeb.stream()
                     .filter(webPlayer -> webPlayer.hasSameName(dbPlayer))
                     .findFirst()
-                    .ifPresentOrElse(player -> {}, () -> closePlayer(dbPlayer, updatablePlayers));
+                    .ifPresentOrElse(player -> {}, () -> closePlayer(dbPlayer, transactedPlayers));
         }
 
-        playerRepository.saveAll(playersFromWeb);
+        playerRepository.saveAll(transactedPlayers);
+    }
+
+    private Player convertToModel(PlayerOverallRankTableRow row) {
+        var experience = PlayerExperience.builder()
+            .level(row.getLevel())
+            .rank(row.getRank())
+            .xp(row.getXp())
+            .build();
+
+        var player = Player.builder()
+            .name(row.getPlayer())
+            .build();
+
+        player.addExperience(experience);
+
+        return player;
     }
     
     private void closePlayer(Player existingPlayer, List<Player> updatablePlayers) {
-        logger.debug("Removed player [{}].", existingPlayer.getName());
+        logger.debug("Closed player [{}].", existingPlayer.getName());
+
         existingPlayer.close(systemTime.current());
+        existingPlayer.getExperiences().forEach(it -> it.close(systemTime.current()));
+
         updatablePlayers.add(existingPlayer);
     }
 
-    private void createPlayer(Player newPlayer, List<Player> players) {
-        logger.debug("New player [{}].", newPlayer.getName());
-        players.add(newPlayer);
+    private void createPlayer(Player webPlayer, List<Player> players) {
+        logger.debug("New player [{}].", webPlayer.getName());
+        players.add(webPlayer);
     }
 
-    private void updatePlayer(Player existingPlayer, List<Player> players) {
-        logger.debug("Existing player [{}].", existingPlayer.getName());
-        players.add(existingPlayer);
+    private void updatePlayer(Player webPlayer, Player dbPlayer, List<Player> players) {
+
+        if (dbPlayer.getClosedAt() == null) {
+            logger.debug("Existing player [{}].", dbPlayer.getName());
+        } else {
+            logger.debug("Existing [CLOSED] player [{}].", dbPlayer.getName());
+            dbPlayer.close(null);
+            dbPlayer.getExperiences().forEach(it -> it.close(null));
+        }
+
+        var experience = webPlayer.getExperiences().stream().findFirst().orElseThrow();
+        dbPlayer.addExperience(experience);
+
+        players.add(dbPlayer);
     }
 }

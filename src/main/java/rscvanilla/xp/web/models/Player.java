@@ -5,28 +5,39 @@ import org.hibernate.annotations.Where;
 import rscvanilla.xp.web.listeners.AuditableEntityListener;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @EntityListeners(AuditableEntityListener.class)
-@Where(clause = "closed_at IS NULL")
-@AllArgsConstructor
-@Builder
+@RequiredArgsConstructor
 public class Player extends AuditableEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Getter @Setter(AccessLevel.PROTECTED)
     private Long id;
 
-    @Getter @Setter
+    @Column(unique = true)
+    @Getter @Setter(AccessLevel.PROTECTED)
     private String name;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "player", cascade = CascadeType.ALL)
-    @Getter @Setter @Singular("experiences")
-    private List<PlayerExperience> experience;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "player", cascade = CascadeType.ALL)
+    @Getter @Setter(AccessLevel.PROTECTED)
+    private List<PlayerExperience> experiences = new ArrayList<>();
 
     public boolean hasSameName(Player player) {
         return name.equals(player.getName());
+    }
+
+    @Builder
+    public Player(String name) {
+        this.name = name;
+    }
+
+    public void addExperience(PlayerExperience experience) {
+        experiences.add(experience);
+        experience.setPlayer(this);
     }
 }
