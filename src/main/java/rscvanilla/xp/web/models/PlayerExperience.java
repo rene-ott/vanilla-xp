@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @RequiredArgsConstructor
-public class PlayerExperienceChange {
+public class PlayerExperience {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -5,7 +5,7 @@ import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rscvanilla.xp.crawler.services.HighScoreCrawlerService;
-import rscvanilla.xp.web.models.PlayerExperienceChange;
+import rscvanilla.xp.web.models.PlayerExperience;
 import rscvanilla.xp.crawler.parsers.PlayerListTableParser;
 
 import java.io.IOException;
@@ -61,7 +61,7 @@ public class HighScoreCrawlerServiceImpl implements HighScoreCrawlerService {
         return doc;
     }
 
-    public PlayerExperienceChange getPlayerExperience(String name) {
+    public PlayerExperience getPlayerExperience(String name) {
         return null;
     }
 }
