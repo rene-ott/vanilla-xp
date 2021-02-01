@@ -40,4 +40,8 @@ public class Player extends AuditableEntity {
         experiences.add(experience);
         experience.setPlayer(this);
     }
+
+    public void clearExperiences() {
+        experiences.clear();
+    }
 }
