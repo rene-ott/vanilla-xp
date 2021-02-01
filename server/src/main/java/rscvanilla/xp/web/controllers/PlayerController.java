@@ -26,7 +26,7 @@ public class PlayerController {
         this.modelMapper = modelMapper;
     }
 
-    @RequestMapping(value="/{days}", method= RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value="/api/{days}", method= RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> index(@PathVariable int days) {
 
         var result = playerService.getPlayersExperienceDelta(1)

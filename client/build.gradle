@@ -1,3 +1,6 @@
 group 'rscvanilla.xp'
 version '0.0.1'
 
+task generateClientDist(type: Exec) {
+    commandLine "npx.cmd", "vue-cli-service",  "build"
+}
