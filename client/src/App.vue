@@ -1,31 +1,23 @@
 <template>
-  <navigation-bar v-on:selected="onNavItemSelected"/>
-  <data-table/>
+  <navigation-bar v-on:nav-link-clicked="onNavItemSelected" />
+  <router-view />
 </template>
 
 <script>
-import NavigationBar from './components/NavigationBar.vue'
-import DataTable from './components/DataTable.vue'
-import axios from 'axios';
-
+import NavigationBar from "./components/NavigationBar.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    DataTable,
-    NavigationBar
+    NavigationBar,
   },
   beforeMount() {
     console.log(process.env);
-
   },
   methods: {
-    onNavItemSelected: function(navItem) {
-      console.log(navItem);
-      axios
-      .get(`/xp/${navItem}`)
-      .then(response => (console.log(response)))
-    }
-  }
-}
+    onNavItemSelected: function (navItem) {
+      console.log("TE" + navItem);
+    },
+  },
+};
 </script>

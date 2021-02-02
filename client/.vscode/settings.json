@@ -7,5 +7,7 @@
         "**/CVS": false,
         "**/dist": true,
         "**/node_modules": true
-    }
+    },
+	"editor.renderWhitespace": "all"
+	"prettier.printWidth": 80
 }
