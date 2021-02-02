@@ -1,12 +1,21 @@
-package rscvanilla.xp.web;
+package rscvanilla.xp.web.configuration;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfiguration implements WebMvcConfigurer {
+
+    @Autowired
+    private Environment environment;
+
+    @Autowired
+    private DevServerConfiguration devServerConfiguration;
 
     /**
      * Ensure client-side paths redirect to index.html because client handles routing. NOTE: Do NOT use @EnableWebMvc or it will break this.
@@ -32,5 +41,14 @@ public class WebConfiguration implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**").addResourceLocations("classpath:/static/");
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        var profiles = environment.getActiveProfiles();
+
+        if (profiles.length == 1 && profiles[0].equals("dev")) {
+            registry.addMapping("/api").allowedOrigins(devServerConfiguration.getAddress());
+        }
     }
 }

@@ -1,0 +1,15 @@
+spring:
+    datasource:
+        password:
+        url:
+        username:
+    jpa:
+        properties:
+            hibernate:
+                jdbc:
+                    time_zone: UTC
+server:
+    port: 8080
+
+logging:
+    config: file:./config/logback.xml

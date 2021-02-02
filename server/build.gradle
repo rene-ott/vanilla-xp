@@ -35,7 +35,24 @@ task copyClientDistToResources(type: Copy) {
 	into "${buildDir}/resources/main/static"
 }
 
-bootJar.dependsOn copyClientDistToResources
+bootJar {
+	dependsOn copyClientDistToResources
+	archiveFileName = "server.${archiveExtension.get()}"
+
+}
+
+task copyConfig(type: Copy) {
+	dependsOn bootJar
+	from "${projectDir}/config"
+	into "${buildDir}/libs/config"
+
+	exclude "application-dev.yml"
+}
+
+task releaseApplication {
+	dependsOn copyConfig
+}
+
 
 test {
 	useJUnitPlatform()
