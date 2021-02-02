@@ -1,7 +1,6 @@
 package rscvanilla.xp.crawler.services.impl;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Streams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -89,8 +88,8 @@ public class HighScoreSyncroServiceImpl implements HighScoreSyncroService {
     private void closePlayer(Player existingPlayer, List<Player> updatablePlayers) {
         logger.debug("Closed player [{}].", existingPlayer.getName());
 
-        existingPlayer.close(systemTime.current());
-        existingPlayer.getExperiences().forEach(it -> it.close(systemTime.current()));
+        existingPlayer.close(systemTime.currentTimeStamp());
+        existingPlayer.getExperiences().forEach(it -> it.close(systemTime.currentTimeStamp()));
 
         updatablePlayers.add(existingPlayer);
     }

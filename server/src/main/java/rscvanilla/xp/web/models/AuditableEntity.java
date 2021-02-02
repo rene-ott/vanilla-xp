@@ -6,25 +6,31 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 
 @MappedSuperclass
 public class AuditableEntity {
 
-    @Column(name = "created_at", columnDefinition = "TIMESTAMP")
+    @Column(name = "created_at")
 
     @Getter @Setter
-    protected LocalDateTime createdAt;
+    protected Instant createdAt;
 
-    @Column(name = "updated_at", columnDefinition = "TIMESTAMP")
+    @Column(name = "updated_at")
     @Getter @Setter
-    protected LocalDateTime updatedAt;
+    protected Instant updatedAt;
 
-    @Column(name = "closed_at", columnDefinition = "TIMESTAMP")
+    @Column(name = "closed_at")
     @Getter @Setter(AccessLevel.PROTECTED)
-    protected LocalDateTime closedAt;
+    protected Instant closedAt;
 
-    public void close(LocalDateTime localDateTime) {
-        closedAt = localDateTime;
+    public void close(Instant instant) {
+        closedAt = instant;
+    }
+
+    public LocalDate getCreatedAtDate() {
+        return LocalDate.ofInstant(createdAt, ZoneOffset.UTC);
     }
 }

@@ -1,23 +1,24 @@
 <template>
   <ul class="nav nav-pills nav-fill">
     <li class="nav-item">
-      <router-link to="/1" class="nav-link" @click="setActive(1)">1</router-link>
+      <router-link :class="{ active: isDefault }" :to="{ name: 'days-1' }" class="nav-link">
+        1 day
+      </router-link>
     </li>
     <li class="nav-item">
-      <router-link to="/2" class="nav-link" @click="setActive(2)">2</router-link>
+      <router-link :to="{ name: 'days-2' }" class="nav-link">2 days</router-link>
     </li>
     <li class="nav-item">
-      <router-link to="/3" class="nav-link" @click="setActive(3)">3</router-link>
+      <router-link :to="{ name: 'days-3' }" class="nav-link">3 days</router-link>
     </li>
     <li class="nav-item">
-      <router-link to="/7" class="nav-link" @click="setActive(7)">7</router-link>
-    </li>
-
-    <li class="nav-item">
-      <router-link to="/14" class="nav-link" @click="setActive(14)">14</router-link>
+      <router-link :to="{ name: 'days-7' }" class="nav-link">7 days</router-link>
     </li>
     <li class="nav-item">
-      <router-link to="/30" class="nav-link" @click="setActive(30)">30</router-link>
+      <router-link :to="{ name: 'days-14' }" class="nav-link">14 days</router-link>
+    </li>
+    <li class="nav-item">
+      <router-link :to="{ name: 'days-30' }" class="nav-link">30 days</router-link>
     </li>
   </ul>
 </template>
@@ -25,15 +26,9 @@
 <script>
 export default {
   name: "NavigationBar",
-  data() {
-    return {
-      navItem: 1,
-    };
-  },
-  methods: {
-    setActive: function (navItem) {
-      this.navItem = navItem;
-      //this.$emit("nav-link-clicked", navItem)
+  computed: {
+    isDefault: function () {
+      return this.$route.path === "/";
     },
   },
 };

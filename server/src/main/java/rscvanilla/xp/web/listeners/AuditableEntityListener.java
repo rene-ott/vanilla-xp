@@ -18,12 +18,12 @@ public class AuditableEntityListener {
 
     @PrePersist
     private void onPersist(AuditableEntity entity) {
-        entity.setCreatedAt(systemTime.current());
-        entity.setUpdatedAt(systemTime.current());
+        entity.setCreatedAt(systemTime.currentTimeStamp());
+        entity.setUpdatedAt(systemTime.currentTimeStamp());
     }
 
     @PreUpdate
     private void onUpdate(AuditableEntity entity) {
-        entity.setUpdatedAt(systemTime.current());
+        entity.setUpdatedAt(systemTime.currentTimeStamp());
     }
 }

@@ -4,28 +4,36 @@
       <thead>
         <tr>
           <th scope="col">#</th>
-          <th scope="col">First</th>
-          <th scope="col">Last</th>
-          <th scope="col">Handle</th>
+          <th scope="col">Player</th>
+          <th scope="col">XP Delta</th>
+          <th scope="col">XP After</th>
+          <th scope="col">XP Before</th>
+
+          <th scope="col">Level Delta</th>
+          <th scope="col">Level After</th>
+          <th scope="col">Level Before</th>
+
+          <th scope="col">Rank Delta</th>
+          <th scope="col">Rank After</th>
+          <th scope="col">Rank Before</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <th scope="row">1</th>
-          <td>Mark</td>
-          <td>Otto</td>
-          <td>@mdo</td>
-        </tr>
-        <tr>
-          <th scope="row">2</th>
-          <td>Jacob</td>
-          <td>Thornton</td>
-          <td>@fat</td>
-        </tr>
-        <tr>
-          <th scope="row">3</th>
-          <td colspan="2">Larry the Bird</td>
-          <td>@twitter</td>
+        <tr v-for="(item, index) in xpData" :key="item.playerName">
+          <th scope="row">{{ index + 1 }}</th>
+          <td>{{ item.playerName }}</td>
+
+          <td>{{ item.deltaXp }}</td>
+          <td>{{ item.currentXp }}</td>
+          <td>{{ item.previousXp }}</td>
+
+          <td>{{ item.deltaLevel }}</td>
+          <td>{{ item.currentLevel }}</td>
+          <td>{{ item.previousLevel }}</td>
+
+          <td>{{ item.deltaRank }}</td>
+          <td>{{ item.currentRank }}</td>
+          <td>{{ item.previousRank }}</td>
         </tr>
       </tbody>
     </table>
@@ -47,13 +55,26 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
+  props: ["dayNumber"],
   name: "DataTable",
-  mounted() {
-    console.log("mounted!");
+  data() {
+    return {
+      xpData: [],
+    };
+  },
+  methods: {
+    getXpData: function (dayNumber) {
+      axios.get(`/xp/${dayNumber}`).then((response) => (this.xpData = response.data));
+    },
   },
   updated() {
-    console.log("updated!");
+    //this.getXpData(this.$props.dayNumber);
+  },
+  mounted() {
+    this.getXpData(this.$props.dayNumber);
   },
 };
 </script>

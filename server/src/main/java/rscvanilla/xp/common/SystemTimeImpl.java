@@ -3,20 +3,26 @@ package rscvanilla.xp.common;
 import org.springframework.stereotype.Component;
 
 import java.time.Clock;
-import java.time.LocalDateTime;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 
 @Component
 public class SystemTimeImpl implements SystemTime {
 
-    private final LocalDateTime time;
+    private final Instant timeStamp;
 
     private SystemTimeImpl() {
-        time = LocalDateTime.now(Clock.systemUTC()).truncatedTo(ChronoUnit.SECONDS);
+        timeStamp = Instant.now(Clock.systemUTC()).truncatedTo(ChronoUnit.SECONDS);
     }
 
     @Override
-    public LocalDateTime current() {
-        return time;
+    public Instant currentTimeStamp() {
+        return timeStamp;
+    }
+
+    public LocalDate currentDate() {
+        return SystemTime.toCurrentDate(timeStamp);
     }
 }

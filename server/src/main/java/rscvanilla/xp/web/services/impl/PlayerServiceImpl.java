@@ -48,7 +48,7 @@ public class PlayerServiceImpl implements PlayerService {
 
         logger.debug("Player [{}] experience calculation:", player.getName());
 
-        var toDate = systemTime.current().toLocalDate();
+        var toDate = systemTime.currentDate();
         var experiencesTo = getPlayerExperienceForDate(player, toDate);
         PlayerExperience experienceTo = null;
 
@@ -86,7 +86,7 @@ public class PlayerServiceImpl implements PlayerService {
 
     private List<PlayerExperience> getPlayerExperienceForDate(Player player, LocalDate fromDate) {
         return player.getExperiences()
-            .stream().filter(it -> it.getCreatedAt().toLocalDate().equals(fromDate))
+            .stream().filter(it -> SystemTime.toCurrentDate(it.getCreatedAt()).equals(fromDate))
             .sorted(Comparator.comparing(PlayerExperience::getCreatedAt))
             .collect(Collectors.toList());
     }
