@@ -7,28 +7,29 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-import rscvanilla.xp.crawler.services.HighScoreSyncroService;
+import rscvanilla.xp.domain.services.PlayerOverallTableSyncroService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import rscvanilla.xp.web.configuration.DevServerConfiguration;
-import rscvanilla.xp.web.dto.PlayerExperienceDeltaDto;
-import rscvanilla.xp.web.models.PlayerExperienceDelta;
+import rscvanilla.xp.presentation.dto.PlayerOverallStateChangeDto;
+import rscvanilla.xp.domain.models.PlayerOverallStateChange;
 
 import java.util.Arrays;
 import java.util.Collections;
 
 @SpringBootApplication
+@EnableScheduling
 public class Application implements CommandLineRunner {
 
-	@Autowired
-	private HighScoreSyncroService highScoreSyncroService;
+	@Autowired(required = false)
+	private PlayerOverallTableSyncroService playerOverallTableSyncroService;
 
 	@Autowired
-	private DevServerConfiguration devServerConfiguration;
+	private Environment env;
 
 	public static void main(String[] args) {
 		new SpringApplicationBuilder(Application.class).web(WebApplicationType.SERVLET).run(args);
@@ -45,7 +46,7 @@ public class Application implements CommandLineRunner {
 		mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 		mapper.validate();
 
-		mapper.createTypeMap(PlayerExperienceDelta.class, PlayerExperienceDeltaDto.class);
+		mapper.createTypeMap(PlayerOverallStateChange.class, PlayerOverallStateChangeDto.class);
 
 		return mapper;
 	}
@@ -57,7 +58,7 @@ public class Application implements CommandLineRunner {
 
 		final CorsConfiguration config = new CorsConfiguration();
 		config.setAllowCredentials(true);
-		config.setAllowedOrigins(Collections.singletonList(devServerConfiguration.getAddress()));
+		config.setAllowedOrigins(Collections.singletonList(String.format("%s:%s", env.getProperty("dev_server.host"), env.getProperty("dev_server.port"))));
 		config.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept"));
 		config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
 
