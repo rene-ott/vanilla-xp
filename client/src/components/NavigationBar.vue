@@ -31,6 +31,14 @@ export default {
       return this.$route.path === "/";
     },
   },
+  beforeRouteEnter(to, from, next) {
+    console.log("TES");
+    next((vm) => {
+      vm.foo = {
+        bar: "blah",
+      };
+    });
+  },
 };
 </script>
 

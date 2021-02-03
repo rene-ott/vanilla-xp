@@ -5,33 +5,36 @@
         <tr>
           <th scope="col">#</th>
           <th scope="col">Player</th>
-          <th scope="col">XP Delta</th>
+          <th scope="col">XP Change</th>
           <th scope="col">XP After</th>
           <th scope="col">XP Before</th>
 
-          <th scope="col">Level Delta</th>
+          <th scope="col">Level Change</th>
           <th scope="col">Level After</th>
           <th scope="col">Level Before</th>
 
-          <th scope="col">Rank Delta</th>
+          <th scope="col">Rank Change</th>
           <th scope="col">Rank After</th>
           <th scope="col">Rank Before</th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(item, index) in xpData" :key="item.playerName">
-          <th scope="row">{{ index + 1 }}</th>
+        <tr v-for="(item, index) in pageChanges" :key="item.playerName">
+          <th scope="row">{{ getGlobalRowIndex(index) }}</th>
           <td>{{ item.playerName }}</td>
 
-          <td>{{ item.deltaXp }}</td>
-          <td>{{ item.currentXp }}</td>
-          <td>{{ item.previousXp }}</td>
+          <td>{{ toLocaleNumber(item.deltaXp) }}</td>
+          <td>{{ toLocaleNumber(item.currentXp) }}</td>
+          <td>{{ toLocaleNumber(item.previousXp) }}</td>
 
-          <td>{{ item.deltaLevel }}</td>
-          <td>{{ item.currentLevel }}</td>
-          <td>{{ item.previousLevel }}</td>
+          <td>{{ toLocaleNumber(item.deltaLevel) }}</td>
+          <td>{{ toLocaleNumber(item.currentLevel) }}</td>
+          <td>{{ toLocaleNumber(item.previousLevel) }}</td>
 
-          <td>{{ item.deltaRank }}</td>
+          <td>
+            {{ item.deltaRank }}
+            <i class="bi bi-arrow-up"></i>
+          </td>
           <td>{{ item.currentRank }}</td>
           <td>{{ item.previousRank }}</td>
         </tr>
@@ -40,14 +43,23 @@
 
     <nav aria-label="Page navigation example">
       <ul class="pagination justify-content-center">
-        <li class="page-item disabled">
-          <a class="page-link" href="#" tabindex="-1">Previous</a>
+        <li class="page-item" :class="{ disabled: isPreviousButtonDisabled() }">
+          <a class="page-link" href="#" @click="onPreviousPage()" tabindex="-1">Previous</a>
         </li>
-        <li class="page-item"><a class="page-link" href="#">1</a></li>
-        <li class="page-item"><a class="page-link" href="#">2</a></li>
-        <li class="page-item"><a class="page-link" href="#">3</a></li>
-        <li class="page-item">
-          <a class="page-link" href="#">Next</a>
+
+        <li
+          v-for="pageNr in pageCount"
+          :key="pageNr"
+          class="page-item"
+          :class="{ active: isActivePage(pageNr) }"
+        >
+          <a class="page-link" href="#" @click="onSelectPage(pageNr)">
+            {{ pageNr }}
+          </a>
+        </li>
+
+        <li class="page-item" :class="{ disabled: isNextButtonDisabled() }">
+          <a class="page-link" href="#" @click="onNextPage()">Next</a>
         </li>
       </ul>
     </nav>
@@ -58,25 +70,115 @@
 import axios from "axios";
 
 export default {
-  props: ["dayNumber"],
+  props: ["daysBeforeToday"],
   name: "DataTable",
+
   data() {
     return {
-      xpData: [],
+      playersOverallChanges: [],
+      pageSize: 10,
+      selectedPageNr: 1,
     };
   },
-  methods: {
-    getXpData: function (dayNumber) {
-      axios.get(`/xp/${dayNumber}`).then((response) => (this.xpData = response.data));
+
+  computed: {
+    pageChanges() {
+      return this.playersOverallChanges.slice(this.pageBeginIndex, this.pageEndIndex);
+    },
+
+    pageCount() {
+      return Math.ceil(this.playersOverallChanges.length / this.pageSize);
+    },
+
+    pageBeginIndex() {
+      return (this.selectedPageNr - 1) * this.pageSize;
+    },
+
+    pageEndIndex() {
+      return this.isLastPage ? this.lastPageEndIndex : this.selectedPageNr * this.pageSize;
+    },
+
+    lastPageEndIndex() {
+      return (
+        (this.playersOverallChanges.length % this.pageSize) + this.selectedPageNr * this.pageSize
+      );
+    },
+
+    isLastPage() {
+      return this.selectedPageNr == this.pageCount;
     },
   },
-  updated() {
-    //this.getXpData(this.$props.dayNumber);
+
+  methods: {
+    requestChanges: (vm) => axios.get(`/xp/${vm.$props.daysBeforeToday}`),
+    handleRequestChangesResponse: (response, vm) => (vm.playersOverallChanges = response.data),
+
+    loadChanges: (vm) =>
+      vm.requestChanges(vm).then((response) => vm.handleRequestChangesResponse(response, vm)),
+
+    onSelectPage: function (selectedPageNr) {
+      this.selectedPageNr = selectedPageNr;
+    },
+
+    onPreviousPage: function () {
+      this.selectedPageNr = this.selectedPageNr - 1;
+    },
+
+    onNextPage: function () {
+      this.selectedPageNr = this.selectedPageNr + 1;
+    },
+
+    getGlobalRowIndex: function (localRowIndex) {
+      return this.pageSize * (this.selectedPageNr - 1) + (localRowIndex + 1);
+    },
+
+    isActivePage: function (index) {
+      return this.selectedPageNr === index;
+    },
+
+    isNextButtonDisabled: function () {
+      return this.selectedPageNr === this.pageCount;
+    },
+
+    isPreviousButtonDisabled: function () {
+      return this.selectedPageNr === 1;
+    },
+
+    toLocaleNumber: function (number) {
+      return parseInt(number).toLocaleString();
+    },
   },
-  mounted() {
-    this.getXpData(this.$props.dayNumber);
+
+  beforeRouteEnter(_to, _, next) {
+    next((vm) => vm.loadChanges(vm));
   },
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+/* https://stackoverflow.com/questions/32355009/changing-pagination-colour-bootstrap */
+.pagination > li > a {
+  background-color: white;
+  color: #007bff;
+}
+
+.pagination > li > a:focus,
+.pagination > li > a:hover,
+.pagination > li > span:focus,
+.pagination > li > span:hover {
+  color: #5a5a5a;
+  background-color: #eee;
+  border-color: #ddd;
+}
+
+.pagination > .active > a {
+  color: white;
+  background-color: #007bff !important;
+  border: solid 1px #007bff !important;
+}
+
+.pagination > .active > a:hover {
+  background-color: #007bff !important;
+  border: solid 1px #007bff;
+}
+</style>
