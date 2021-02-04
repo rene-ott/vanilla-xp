@@ -1,4 +1,5 @@
 # TODO
+- Improve build.gradle for release
 - Move bean definitions out from Application.java
 - Separate packages into modules
 - Handle exceptions

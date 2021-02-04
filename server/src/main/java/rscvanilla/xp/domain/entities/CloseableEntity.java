@@ -22,4 +22,8 @@ public class CloseableEntity extends AuditableEntity {
     public void open() {
         closedAt = null;
     }
+
+    public boolean isOpened() {
+        return closedAt == null;
+    }
 }

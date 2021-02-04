@@ -34,9 +34,9 @@ public class Player extends CloseableEntity {
         this.name = name;
     }
 
-    public void addExperience(PlayerOverallState experience) {
-        experiences.add(experience);
-        experience.setPlayer(this);
+    public void addState(PlayerOverallState state) {
+        experiences.add(state);
+        state.setPlayer(this);
     }
 
     public void clearOverallStates() {

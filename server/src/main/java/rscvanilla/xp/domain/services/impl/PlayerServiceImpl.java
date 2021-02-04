@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import rscvanilla.xp.domain.entities.CloseableEntity;
 import rscvanilla.xp.domain.entities.Player;
 import rscvanilla.xp.domain.entities.PlayerOverallState;
 import rscvanilla.xp.domain.models.PlayerOverallStateChange;
@@ -32,12 +33,16 @@ public class PlayerServiceImpl implements PlayerService {
     }
 
     @Override
-    public List<PlayerOverallStateChange> getPlayerOverallStateChanges(int days) {
+    public List<PlayerOverallStateChange> getPlayerOverallStateChanges(int daysBeforeToday) {
         return playerRepository.findAll()
             .stream()
-            .filter(it -> it.getClosedAt() == null)
-            .map(it -> getPlayerOverallStateChange(it, days))
-            .sorted(Comparator.comparing(PlayerOverallStateChange::getXpChange, Comparator.nullsLast(Comparator.naturalOrder())))
+            .filter(CloseableEntity::isOpened)
+            .map(it -> getPlayerOverallStateChange(it, daysBeforeToday))
+            .sorted(
+                Comparator
+                    .comparing(PlayerOverallStateChange::getXpChange, Comparator.nullsLast(Comparator.naturalOrder()))
+                    .thenComparing(PlayerOverallStateChange::getPlayerName)
+            )
             .collect(Collectors.toList());
     }
 

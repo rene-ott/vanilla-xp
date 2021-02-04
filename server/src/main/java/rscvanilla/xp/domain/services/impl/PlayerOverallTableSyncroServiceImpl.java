@@ -77,7 +77,7 @@ public class PlayerOverallTableSyncroServiceImpl implements PlayerOverallTableSy
             .name(row.getPlayer())
             .build();
 
-        player.addExperience(experience);
+        player.addState(experience);
 
         return player;
     }
@@ -98,7 +98,7 @@ public class PlayerOverallTableSyncroServiceImpl implements PlayerOverallTableSy
 
     private void updatePlayer(Player webPlayer, Player dbPlayer, List<Player> players) {
 
-        if (dbPlayer.getClosedAt() == null) {
+        if (dbPlayer.isOpened()) {
             logger.debug("Existing player [{}].", dbPlayer.getName());
         } else {
             logger.debug("Existing [CLOSED] player [{}].", dbPlayer.getName());
@@ -107,7 +107,7 @@ public class PlayerOverallTableSyncroServiceImpl implements PlayerOverallTableSy
         }
 
         var experience = webPlayer.getExperiences().stream().findFirst().orElseThrow();
-        dbPlayer.addExperience(experience);
+        dbPlayer.addState(experience);
 
         players.add(dbPlayer);
     }

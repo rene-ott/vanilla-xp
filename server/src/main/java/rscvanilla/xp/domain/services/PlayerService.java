@@ -5,5 +5,5 @@ import rscvanilla.xp.domain.models.PlayerOverallStateChange;
 import java.util.List;
 
 public interface PlayerService {
-    List<PlayerOverallStateChange> getPlayerOverallStateChanges(int days);
+    List<PlayerOverallStateChange> getPlayerOverallStateChanges(int daysBeforeToday);
 }
