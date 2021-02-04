@@ -10,6 +10,7 @@ public interface SystemTime {
     LocalDateTime currentDateStartOfTheDay();
     LocalDateTime currentDateEndOfTheDay();
 
+    // TODO separate class DateTime
     static LocalDate toCurrentDate(Instant timeStamp) {
         return LocalDate.ofInstant(timeStamp, ZoneOffset.UTC);
     }

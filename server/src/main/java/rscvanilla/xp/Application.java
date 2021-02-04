@@ -13,8 +13,12 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import rscvanilla.xp.domain.entities.SyncroResult;
 import rscvanilla.xp.domain.models.PlayerOverallStateChange;
 import rscvanilla.xp.presentation.dto.PlayerOverallStateChangeDto;
+import rscvanilla.xp.presentation.dto.SyncroResultDto;
+import rscvanilla.xp.presentation.mapper.InstantToLocalDateTimeConverter;
+import rscvanilla.xp.presentation.mapper.mappings.SyncroResultDtoMapping;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -34,9 +38,13 @@ public class Application {
 	public ModelMapper getModelMapper() {
 		var mapper = new ModelMapper();
 		mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-		mapper.validate();
+		mapper.addConverter(new InstantToLocalDateTimeConverter());
+
+		mapper.createTypeMap(SyncroResult.class, SyncroResultDto.class).addMappings(new SyncroResultDtoMapping());
 
 		mapper.createTypeMap(PlayerOverallStateChange.class, PlayerOverallStateChangeDto.class);
+
+		mapper.validate();
 
 		return mapper;
 	}

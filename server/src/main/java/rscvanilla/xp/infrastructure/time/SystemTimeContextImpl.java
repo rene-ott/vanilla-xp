@@ -1,12 +1,12 @@
 package rscvanilla.xp.infrastructure.time;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 
 import java.time.Instant;
 
-@Component
+@Service
 public class SystemTimeContextImpl implements SystemTimeContext {
 
     public static final String KEY = "REQUEST_TIME";

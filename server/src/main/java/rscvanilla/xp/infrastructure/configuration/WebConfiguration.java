@@ -1,5 +1,6 @@
 package rscvanilla.xp.infrastructure.configuration;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -9,6 +10,9 @@ import rscvanilla.xp.infrastructure.interceptors.WebRequestTimeInterceptor;
 
 @Configuration
 public class WebConfiguration implements WebMvcConfigurer {
+
+    @Autowired
+    private WebRequestTimeInterceptor webRequestTimeInterceptor;
 
     /**
      * Ensure client-side paths redirect to index.html because client handles routing. NOTE: Do NOT use @EnableWebMvc or it will break this.
@@ -38,6 +42,6 @@ public class WebConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new WebRequestTimeInterceptor());
+        registry.addInterceptor(webRequestTimeInterceptor);
     }
 }

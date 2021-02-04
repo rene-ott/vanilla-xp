@@ -7,4 +7,5 @@ import java.util.List;
 public interface SyncroResultService {
     List<SyncroResult> findByTodayDate();
     void insertOrUpdate(SyncroResult syncroResult);
+    SyncroResult getLatestForToday();
 }

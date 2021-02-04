@@ -46,9 +46,14 @@ public class PlayerOverallTableSyncroScheduledTask {
             foundResult = results.get(0);
 
             var time = SystemTime.toCurrentDateTime(foundResult.getCreatedAt());
-            if (foundResult.getStatus() == SyncroResultStatus.OK) {
+            if (foundResult.getStatus().equals(SyncroResultStatus.OK)) {
                 logger.info("Table is already successfully synchronized at [{}] not necessary to synchronize. ", time);
 
+                // TODO: Temp hack forever to trigger DB update for non changed field.
+                //  EntityListener will write correct value to updatedAt field.
+                foundResult.setUpdatedAt(null);
+
+                syncroResultService.insertOrUpdate(foundResult);
                 systemTimeContext.clearTime();
                 return;
 

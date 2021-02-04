@@ -23,6 +23,7 @@ public class SyncroResultServiceImpl implements SyncroResultService {
         this.systemTime = systemTime;
     }
 
+    @Override
     public List<SyncroResult> findByTodayDate() {
         var startOfTheDay = systemTime.currentDateStartOfTheDay().toInstant(ZoneOffset.UTC);
         var endOfTheDay = systemTime.currentDateEndOfTheDay().toInstant(ZoneOffset.UTC);
@@ -33,5 +34,11 @@ public class SyncroResultServiceImpl implements SyncroResultService {
     @Override
     public void insertOrUpdate(SyncroResult syncroResult) {
         syncroResultRepository.save(syncroResult);
+    }
+
+    @Override
+    public SyncroResult getLatestForToday() {
+        var results = findByTodayDate();
+        return results.isEmpty() ? SyncroResult.createMissingResult() : results.get(0);
     }
 }
