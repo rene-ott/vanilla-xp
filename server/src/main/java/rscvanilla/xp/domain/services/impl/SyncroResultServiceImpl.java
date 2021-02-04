@@ -1,32 +1,37 @@
 package rscvanilla.xp.domain.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import rscvanilla.xp.domain.entities.SyncroResult;
 import rscvanilla.xp.domain.services.SyncroResultService;
-import rscvanilla.xp.domain.services.SystemTimeService;
+import rscvanilla.xp.infrastructure.time.SystemTime;
 import rscvanilla.xp.persistance.repositories.SyncroResultRepository;
 
-import java.time.LocalTime;
 import java.time.ZoneOffset;
 import java.util.List;
 
+@Service
 public class SyncroResultServiceImpl implements SyncroResultService {
 
     private final SyncroResultRepository syncroResultRepository;
-    private final SystemTimeService systemTimeService;
+    private final SystemTime systemTime;
 
     @Autowired
     public SyncroResultServiceImpl(SyncroResultRepository syncroResultRepository,
-                                   SystemTimeService systemTimeService) {
+                                   SystemTime systemTime) {
         this.syncroResultRepository = syncroResultRepository;
-        this.systemTimeService = systemTimeService;
+        this.systemTime = systemTime;
     }
 
     public List<SyncroResult> findByTodayDate() {
-        var currentDate = systemTimeService.currentDate();
-        var startOfTheDay = currentDate.atStartOfDay(ZoneOffset.UTC);
-        var endOfTheDay = LocalTime.MAX.atDate(currentDate);
+        var startOfTheDay = systemTime.currentDateStartOfTheDay().toInstant(ZoneOffset.UTC);
+        var endOfTheDay = systemTime.currentDateEndOfTheDay().toInstant(ZoneOffset.UTC);
 
-        return syncroResultRepository.findAllBetween(startOfTheDay.toInstant(), endOfTheDay.toInstant(ZoneOffset.UTC));
+        return syncroResultRepository.findAllBetween(startOfTheDay, endOfTheDay);
+    }
+
+    @Override
+    public void insertOrUpdate(SyncroResult syncroResult) {
+        syncroResultRepository.save(syncroResult);
     }
 }

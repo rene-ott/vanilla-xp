@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity
 @EntityListeners(AuditableEntityListener.class)
 @RequiredArgsConstructor
-public class PlayerOverallState extends AuditableEntity {
+public class PlayerOverallState extends CloseableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)

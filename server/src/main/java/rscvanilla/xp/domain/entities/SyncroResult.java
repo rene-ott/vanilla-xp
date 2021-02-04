@@ -5,13 +5,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import rscvanilla.xp.domain.models.SyncroResultStatus;
+import rscvanilla.xp.persistance.listeners.AuditableEntityListener;
 
 import javax.persistence.*;
-import java.time.Instant;
 
 @Entity
 @Builder
-public class SyncroResult {
+@EntityListeners(AuditableEntityListener.class)
+public class SyncroResult extends AuditableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -20,14 +21,11 @@ public class SyncroResult {
     private Long id;
 
     @Column
-    @Getter @Setter(AccessLevel.PROTECTED)
+    @Getter @Setter
     private SyncroResultStatus status;
 
     @Column
-    @Getter @Setter(AccessLevel.PROTECTED)
+    @Getter @Setter
     private int tryCount;
 
-    @Column
-    @Getter @Setter(AccessLevel.PROTECTED)
-    private Instant createdAt;
 }

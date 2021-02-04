@@ -4,10 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import rscvanilla.xp.domain.services.SystemTimeService;
 import rscvanilla.xp.domain.entities.Player;
 import rscvanilla.xp.domain.entities.PlayerOverallState;
 import rscvanilla.xp.domain.models.PlayerOverallStateChange;
+import rscvanilla.xp.infrastructure.time.SystemTime;
 import rscvanilla.xp.persistance.repositories.PlayerRepository;
 import rscvanilla.xp.domain.services.PlayerService;
 
@@ -22,10 +22,10 @@ public class PlayerServiceImpl implements PlayerService {
     private final Logger logger = LoggerFactory.getLogger(PlayerService.class);
 
     private final PlayerRepository playerRepository;
-    private final SystemTimeService systemTime;
+    private final SystemTime systemTime;
 
     @Autowired
-    public PlayerServiceImpl(PlayerRepository playerRepository, SystemTimeService systemTime) {
+    public PlayerServiceImpl(PlayerRepository playerRepository, SystemTime systemTime) {
         this.playerRepository = playerRepository;
         this.systemTime = systemTime;
     }
@@ -81,7 +81,7 @@ public class PlayerServiceImpl implements PlayerService {
 
     private List<PlayerOverallState> findPlayerOverallStateByDate(Player player, LocalDate fromDate) {
         return player.getExperiences()
-            .stream().filter(it -> SystemTimeService.toCurrentDate(it.getCreatedAt()).equals(fromDate))
+            .stream().filter(it -> SystemTime.toCurrentDate(it.getCreatedAt()).equals(fromDate))
             .sorted(Comparator.comparing(PlayerOverallState::getCreatedAt))
             .collect(Collectors.toList());
     }

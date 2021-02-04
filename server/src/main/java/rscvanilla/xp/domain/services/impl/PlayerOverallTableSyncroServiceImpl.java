@@ -6,11 +6,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rscvanilla.xp.domain.services.PlayerOverallTableSyncroService;
-import rscvanilla.xp.domain.services.SystemTimeService;
 import rscvanilla.xp.domain.models.PlayerOverallTableRow;
 import rscvanilla.xp.domain.services.PlayerOverallTableCrawlerService;
 import rscvanilla.xp.domain.entities.Player;
 import rscvanilla.xp.domain.entities.PlayerOverallState;
+import rscvanilla.xp.infrastructure.time.SystemTime;
 import rscvanilla.xp.persistance.repositories.PlayerRepository;
 
 import java.util.ArrayList;
@@ -24,12 +24,12 @@ public class PlayerOverallTableSyncroServiceImpl implements PlayerOverallTableSy
 
     private final PlayerOverallTableCrawlerService playerOverallTableCrawlerService;
     private final PlayerRepository playerRepository;
-    private final SystemTimeService systemTime;
+    private final SystemTime systemTime;
 
     @Autowired
     public PlayerOverallTableSyncroServiceImpl(PlayerOverallTableCrawlerService playerOverallTableCrawlerService,
                                                PlayerRepository playerRepository,
-                                               SystemTimeService systemTime) {
+                                               SystemTime systemTime) {
         this.playerOverallTableCrawlerService = playerOverallTableCrawlerService;
         this.playerRepository = playerRepository;
         this.systemTime = systemTime;

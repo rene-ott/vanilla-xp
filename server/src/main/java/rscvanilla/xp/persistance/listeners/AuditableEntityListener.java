@@ -1,8 +1,9 @@
 package rscvanilla.xp.persistance.listeners;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import rscvanilla.xp.domain.services.SystemTimeService;
 import rscvanilla.xp.domain.entities.AuditableEntity;
+import rscvanilla.xp.infrastructure.time.SystemTime;
 
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
@@ -10,9 +11,10 @@ import javax.persistence.PreUpdate;
 @Component
 public class AuditableEntityListener {
 
-    private final SystemTimeService systemTime;
+    private final SystemTime systemTime;
 
-    private AuditableEntityListener(SystemTimeService systemTime) {
+    @Autowired
+    private AuditableEntityListener(SystemTime systemTime) {
         this.systemTime = systemTime;
     }
 

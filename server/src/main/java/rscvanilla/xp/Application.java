@@ -2,7 +2,9 @@ package rscvanilla.xp;
 
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.WebApplicationType;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;
@@ -11,33 +13,21 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
-import rscvanilla.xp.domain.services.PlayerOverallTableSyncroService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import rscvanilla.xp.presentation.dto.PlayerOverallStateChangeDto;
 import rscvanilla.xp.domain.models.PlayerOverallStateChange;
+import rscvanilla.xp.presentation.dto.PlayerOverallStateChangeDto;
 
 import java.util.Arrays;
 import java.util.Collections;
 
 @SpringBootApplication
 @EnableScheduling
-public class Application implements CommandLineRunner {
-
-	@Autowired(required = false)
-	private PlayerOverallTableSyncroService playerOverallTableSyncroService;
+public class Application {
 
 	@Autowired
 	private Environment env;
 
 	public static void main(String[] args) {
 		new SpringApplicationBuilder(Application.class).web(WebApplicationType.SERVLET).run(args);
-	}
-
-	@Override
-	public void run(String... args) {
-		//highScoreSyncroService.synchronizeToDatabase();
 	}
 
 	@Bean

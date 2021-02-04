@@ -10,7 +10,7 @@ import java.util.List;
 @Entity
 @EntityListeners(AuditableEntityListener.class)
 @RequiredArgsConstructor
-public class Player extends AuditableEntity {
+public class Player extends CloseableEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
