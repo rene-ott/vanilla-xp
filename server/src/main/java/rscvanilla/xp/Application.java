@@ -27,8 +27,12 @@ import java.util.Collections;
 @EnableScheduling
 public class Application {
 
-	@Autowired
 	private Environment env;
+
+	@Autowired
+	public Application(Environment env) {
+		this.env = env;
+	}
 
 	public static void main(String[] args) {
 		new SpringApplicationBuilder(Application.class).web(WebApplicationType.SERVLET).run(args);

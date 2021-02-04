@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import rscvanilla.xp.domain.entities.CloseableEntity;
 import rscvanilla.xp.domain.services.PlayerOverallTableSyncroService;
 import rscvanilla.xp.domain.models.PlayerOverallTableRow;
 import rscvanilla.xp.domain.services.PlayerOverallTableCrawlerService;
@@ -101,8 +102,8 @@ public class PlayerOverallTableSyncroServiceImpl implements PlayerOverallTableSy
             logger.debug("Existing player [{}].", dbPlayer.getName());
         } else {
             logger.debug("Existing [CLOSED] player [{}].", dbPlayer.getName());
-            dbPlayer.close(null);
-            dbPlayer.getExperiences().forEach(it -> it.close(null));
+            dbPlayer.open();
+            dbPlayer.getExperiences().forEach(CloseableEntity::open);
         }
 
         var experience = webPlayer.getExperiences().stream().findFirst().orElseThrow();

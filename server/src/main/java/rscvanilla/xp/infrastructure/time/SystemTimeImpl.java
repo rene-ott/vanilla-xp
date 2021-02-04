@@ -1,6 +1,7 @@
 package rscvanilla.xp.infrastructure.time;
 
 import org.springframework.stereotype.Service;
+import rscvanilla.xp.domain.utils.DateTime;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -23,7 +24,7 @@ public class SystemTimeImpl implements SystemTime {
 
     @Override
     public LocalDate currentDate() {
-        return SystemTime.toCurrentDate(timeContext.getTime());
+        return DateTime.toDate(timeContext.getTime());
     }
 
     @Override

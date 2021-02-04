@@ -9,6 +9,7 @@ import rscvanilla.xp.domain.entities.SyncroResult;
 import rscvanilla.xp.domain.models.SyncroResultStatus;
 import rscvanilla.xp.domain.services.PlayerOverallTableSyncroService;
 import rscvanilla.xp.domain.services.SyncroResultService;
+import rscvanilla.xp.domain.utils.DateTime;
 import rscvanilla.xp.infrastructure.time.SystemTime;
 import rscvanilla.xp.infrastructure.time.SystemTimeContext;
 
@@ -37,7 +38,7 @@ public class PlayerOverallTableSyncroScheduledTask {
     public void run() {
         logger.info("Checking necessity of RSC Vanilla overall table synchronization.");
 
-        systemTimeContext.setTime(SystemTime.now());
+        systemTimeContext.setTime(DateTime.now());
         var results = syncroResultService.findByTodayDate();
 
         SyncroResult foundResult = null;
@@ -45,7 +46,7 @@ public class PlayerOverallTableSyncroScheduledTask {
         if (!results.isEmpty()) {
             foundResult = results.get(0);
 
-            var time = SystemTime.toCurrentDateTime(foundResult.getCreatedAt());
+            var time = DateTime.toDateTime(foundResult.getCreatedAt());
             if (foundResult.getStatus().equals(SyncroResultStatus.OK)) {
                 logger.info("Table is already successfully synchronized at [{}] not necessary to synchronize. ", time);
 

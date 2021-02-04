@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import rscvanilla.xp.domain.entities.Player;
 import rscvanilla.xp.domain.entities.PlayerOverallState;
 import rscvanilla.xp.domain.models.PlayerOverallStateChange;
+import rscvanilla.xp.domain.utils.DateTime;
 import rscvanilla.xp.infrastructure.time.SystemTime;
 import rscvanilla.xp.persistance.repositories.PlayerRepository;
 import rscvanilla.xp.domain.services.PlayerService;
@@ -36,6 +37,7 @@ public class PlayerServiceImpl implements PlayerService {
             .stream()
             .filter(it -> it.getClosedAt() == null)
             .map(it -> getPlayerOverallStateChange(it, days))
+            .sorted(Comparator.comparing(PlayerOverallStateChange::getXpChange, Comparator.nullsLast(Comparator.naturalOrder())))
             .collect(Collectors.toList());
     }
 
@@ -81,7 +83,7 @@ public class PlayerServiceImpl implements PlayerService {
 
     private List<PlayerOverallState> findPlayerOverallStateByDate(Player player, LocalDate fromDate) {
         return player.getExperiences()
-            .stream().filter(it -> SystemTime.toCurrentDate(it.getCreatedAt()).equals(fromDate))
+            .stream().filter(it -> DateTime.toDate(it.getCreatedAt()).equals(fromDate))
             .sorted(Comparator.comparing(PlayerOverallState::getCreatedAt))
             .collect(Collectors.toList());
     }

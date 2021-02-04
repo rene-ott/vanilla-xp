@@ -18,4 +18,8 @@ public class CloseableEntity extends AuditableEntity {
     public void close(Instant instant) {
         closedAt = instant;
     }
+
+    public void open() {
+        closedAt = null;
+    }
 }

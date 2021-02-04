@@ -33,7 +33,6 @@ public class PlayerController {
 
         var result = playerService.getPlayerOverallStateChanges(daysBeforeToday)
             .stream()
-            .sorted(Comparator.nullsLast(Comparator.comparing(PlayerOverallStateChange::getXpChange)))
             .map(it -> modelMapper.map(it, PlayerOverallStateChangeDto.class))
             .collect(Collectors.toList());
 

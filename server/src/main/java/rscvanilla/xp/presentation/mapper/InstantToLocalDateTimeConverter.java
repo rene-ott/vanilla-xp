@@ -2,7 +2,7 @@ package rscvanilla.xp.presentation.mapper;
 
 import org.modelmapper.Converter;
 import org.modelmapper.spi.MappingContext;
-import rscvanilla.xp.infrastructure.time.SystemTime;
+import rscvanilla.xp.domain.utils.DateTime;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -11,7 +11,6 @@ public class InstantToLocalDateTimeConverter implements Converter<Instant, Local
 
     @Override
     public LocalDateTime convert(MappingContext<Instant, LocalDateTime> context) {
-
-        return context.getSource() == null ? null : SystemTime.toCurrentDateTime(context.getSource());
+        return context.getSource() == null ? null : DateTime.toDateTime(context.getSource());
     }
 }

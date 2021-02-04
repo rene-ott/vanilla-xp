@@ -28,15 +28,6 @@ public class SystemTimeImplTest {
     }
 
     @Test
-    public void toCurrentDate_timestamp_returnsDate() {
-        var utcTimeStamp = createUtcInstant("2020-01-14T23:59:00Z");
-
-        var localDate = SystemTime.toCurrentDate(utcTimeStamp);
-
-        assertThat(localDate).isEqualTo(LocalDate.of(2020, 1, 14));
-    }
-
-    @Test
     public void currentDateEndOfTheDay_timestamp_returnsWithMaxTime() {
         when(systemTimeContext.getTime()).thenReturn(createUtcInstant("2020-01-14T22:59:00Z"));
 
