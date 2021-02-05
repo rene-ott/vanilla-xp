@@ -15,12 +15,15 @@ public class PlayerOverallState extends CloseableEntity {
     @Getter @Setter(AccessLevel.PROTECTED)
     private Long id;
 
+    @Column(nullable = false)
     @Getter @Setter(AccessLevel.PROTECTED)
     private int rank;
 
+    @Column(nullable = false)
     @Getter @Setter(AccessLevel.PROTECTED)
     private int xp;
 
+    @Column(nullable = false)
     @Getter @Setter(AccessLevel.PROTECTED)
     private int level;
 

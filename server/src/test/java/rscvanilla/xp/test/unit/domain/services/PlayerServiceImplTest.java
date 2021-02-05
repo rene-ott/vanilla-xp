@@ -60,7 +60,7 @@ public class PlayerServiceImplTest {
     @Test
     public void getPlayerOverallStateChangesWithDaysBefore1_TwoNewPlayers_Returns2EmptyChanges() {
         var firstPlayer = createFirstPlayer();
-        var firstPlayerState = createState(STATE_XP_1_BEFORE, localDateTimeOfToday(15, 0));
+        var firstPlayerState = createState(STATE_XP_1_AFTER, localDateTimeOfToday(15, 0));
         firstPlayer.addState(firstPlayerState);
 
         var secondPlayer = createSecondPlayer();
@@ -75,11 +75,41 @@ public class PlayerServiceImplTest {
 
         var firstChange = changes.get(0);
         assertThat(firstChange.getPlayerName()).isEqualTo(PLAYER_1);
-        assertThat(firstChange.isNotAvailable());
+        assertThat(firstChange.isNotAvailable()).isTrue();
 
         var secondChange = changes.get(1);
         assertThat(secondChange.getPlayerName()).isEqualTo(PLAYER_2);
-        assertThat(secondChange.isNotAvailable());
+        assertThat(secondChange.isNotAvailable()).isTrue();
+    }
+
+    @DisplayName("Tests if new players return empty change. Orders them by name if both have equal createdAt.")
+    @Test
+    public void getPlayerOverallStateChangesWithDaysBefore1_OneNewPlayerOneOld_Returns1EmptyChange() {
+        var firstPlayer = createFirstPlayer();
+        var firstPlayerBeforeState = createState(STATE_XP_1_BEFORE, localDateTimeOfToday(15, 0).minusDays(1));
+        var firstPlayerAfterState = createState(STATE_XP_1_AFTER, localDateTimeOfToday(15, 0));
+        firstPlayer.addState(firstPlayerBeforeState);
+        firstPlayer.addState(firstPlayerAfterState);
+
+        var secondPlayer = createSecondPlayer();
+        var secondPlayerState = createState(STATE_XP_2_AFTER, localDateTimeOfToday(15, 0));
+        secondPlayer.addState(secondPlayerState);
+
+        when(systemTime.currentDate()).thenReturn(TODAY_DATE);
+        when(playerRepository.findAll()).thenReturn(listOf(secondPlayer, firstPlayer));
+
+        var changes = playerService.getPlayerOverallStateChanges(1);
+        assertThat(changes.size()).isEqualTo(2);
+
+        var firstChange = changes.get(0);
+        assertThat(firstChange.getPlayerName()).isEqualTo(PLAYER_1);
+        assertThat(firstChange.isNotAvailable()).isFalse();
+        assertThat(firstChange.getXpChange()).isEqualTo(9);
+
+
+        var secondChange = changes.get(1);
+        assertThat(secondChange.getPlayerName()).isEqualTo(PLAYER_2);
+        assertThat(secondChange.isNotAvailable()).isTrue();
     }
 
     public LocalDateTime localDateTimeOfToday(int hour, int min) {

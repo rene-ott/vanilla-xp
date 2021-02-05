@@ -17,7 +17,7 @@ public class Player extends CloseableEntity {
     @Getter @Setter(AccessLevel.PROTECTED)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     @Getter @Setter(AccessLevel.PROTECTED)
     private String name;
 

@@ -1,11 +1,15 @@
 spring:
     datasource:
-        password:
-        url:
-        username:
+        username: #Set value
+        password: # Set value
+        url: #Set value
     jpa:
+        hibernate:
+            ddl-auto: none
+            dialect: org.hibernate.dialect.PostgreSQLDialect
         properties:
             hibernate:
+                default_schema: # Set value
                 jdbc:
                     time_zone: UTC
 server:

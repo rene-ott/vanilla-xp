@@ -1,6 +1,5 @@
 package rscvanilla.xp.domain.entities;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,11 +10,11 @@ import java.time.Instant;
 @MappedSuperclass
 public class AuditableEntity {
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     @Getter @Setter
     protected Instant createdAt;
 
-    @Column(name = "updated_at")
+    @Column(name = "updated_at", nullable = false)
     @Getter @Setter
     protected Instant updatedAt;
 }
