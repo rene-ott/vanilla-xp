@@ -38,7 +38,7 @@ public class PlayerOverallTableSyncroScheduledTask {
     public void run() {
         logger.info("Checking necessity of RSC Vanilla overall table synchronization.");
 
-        systemTimeContext.setTime(DateTime.now());
+        systemTimeContext.setTempTime(DateTime.now());
         var results = syncroResultService.findByTodayDate();
 
         SyncroResult foundResult = null;
@@ -55,7 +55,7 @@ public class PlayerOverallTableSyncroScheduledTask {
                 foundResult.setUpdatedAt(null);
 
                 syncroResultService.insertOrUpdate(foundResult);
-                systemTimeContext.clearTime();
+                systemTimeContext.clearTempTime();
                 return;
 
             } else {
@@ -78,11 +78,11 @@ public class PlayerOverallTableSyncroScheduledTask {
             }
 
             syncroResultService.insertOrUpdate(foundResult);
-            systemTimeContext.clearTime();
+            systemTimeContext.clearTempTime();
         }
         logger.info("Synchronization [SUCCEEDED].");
         foundResult = SyncroResult.builder().status(SyncroResultStatus.OK).tryCount(1).build();
         syncroResultService.insertOrUpdate(foundResult);
-        systemTimeContext.clearTime();
+        systemTimeContext.clearTempTime();
     }
 }

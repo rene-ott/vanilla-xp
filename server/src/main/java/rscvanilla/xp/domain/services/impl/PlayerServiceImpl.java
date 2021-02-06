@@ -40,7 +40,7 @@ public class PlayerServiceImpl implements PlayerService {
             .map(it -> getPlayerOverallStateChange(it, daysBeforeToday))
             .sorted(
                 Comparator
-                    .comparing(PlayerOverallStateChange::getXpChange, Comparator.nullsLast(Comparator.naturalOrder()))
+                    .comparing(PlayerOverallStateChange::getXpChange, Comparator.nullsLast(Comparator.reverseOrder()))
                     .thenComparing(PlayerOverallStateChange::getPlayerName)
             )
             .collect(Collectors.toList());

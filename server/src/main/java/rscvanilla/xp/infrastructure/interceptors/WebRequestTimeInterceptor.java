@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
 import rscvanilla.xp.domain.utils.DateTime;
 import rscvanilla.xp.infrastructure.time.SystemTime;
 import rscvanilla.xp.infrastructure.time.SystemTimeContext;
@@ -24,7 +25,12 @@ public class WebRequestTimeInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
-        systemTimeContext.setTime(DateTime.now());
+        systemTimeContext.setRequestTime(DateTime.now());
         return true;
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
+        systemTimeContext.clearRequestTime();
     }
 }

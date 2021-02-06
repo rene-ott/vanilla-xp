@@ -15,28 +15,24 @@ public class SystemTimeContextImpl implements SystemTimeContext {
 
     private Instant tempTimeStamp;
 
-    public void setTime(Instant time) {
-        var requestContext = getRequestContext();
-        if (requestContext != null) {
-            setRequestTime(requestContext, time);
-        } else {
-            setTempTime(time);
-        }
-    }
-
     private RequestAttributes getRequestContext() {
         return RequestContextHolder.getRequestAttributes();
     }
 
-    private void setRequestTime(RequestAttributes requestContext, Instant time) {
+    public void setRequestTime(Instant time) {
         var requestTime = getRequestTime();
         if (requestTime != null) {
             throw new IllegalStateException("Setting time when request time is set is forbidden.");
         }
-        requestContext.setAttribute(KEY, time, RequestAttributes.SCOPE_REQUEST);
+        getRequestContext().setAttribute(KEY, time, RequestAttributes.SCOPE_REQUEST);
     }
 
-    private void setTempTime(Instant time) {
+    @Override
+    public void clearRequestTime() {
+        getRequestContext().removeAttribute(KEY, RequestAttributes.SCOPE_REQUEST);
+    }
+
+    public void setTempTime(Instant time) {
         if (this.tempTimeStamp != null) {
             throw new IllegalStateException("Temp time is already set.");
         }
@@ -71,7 +67,7 @@ public class SystemTimeContextImpl implements SystemTimeContext {
         return (Instant) requestAttribute;
     }
 
-    public void clearTime() {
+    public void clearTempTime() {
         if (tempTimeStamp == null) {
             throw new IllegalStateException("Timestamp is already cleared.");
         }

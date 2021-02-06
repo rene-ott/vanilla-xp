@@ -17,7 +17,7 @@ import java.util.Comparator;
 import java.util.stream.Collectors;
 
 @RestController
-public class PlayerController {
+public class PlayerController extends ApiController {
 
     private final PlayerService playerService;
     private final ModelMapper modelMapper;
@@ -28,7 +28,7 @@ public class PlayerController {
         this.modelMapper = modelMapper;
     }
 
-    @RequestMapping(value="/api/overall-state-change/{daysBeforeToday:1|2|3|7|14|30}", method= RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value="/overall-state-change/{daysBeforeToday:1|2|3|7|14|30}", method= RequestMethod.GET, produces= MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> index(@PathVariable int daysBeforeToday) {
 
         var result = playerService.getPlayerOverallStateChanges(daysBeforeToday)

@@ -6,12 +6,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import rscvanilla.xp.domain.services.SyncroResultService;
 import rscvanilla.xp.presentation.dto.SyncroResultDto;
 
 @RestController
-public class SyncroResultController {
+public class SyncroResultController extends ApiController {
 
     private final SyncroResultService syncroResultService;
     private final ModelMapper modelMapper;
@@ -22,7 +24,7 @@ public class SyncroResultController {
         this.modelMapper = modelMapper;
     }
 
-    @GetMapping(value="/api/syncro-result", produces= MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value="/syncro-result", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> index() {
         return new ResponseEntity<>(
             modelMapper.map(syncroResultService.getLatestForToday(), SyncroResultDto.class),
