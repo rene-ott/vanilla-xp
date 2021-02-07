@@ -12,6 +12,12 @@ spring:
                 default_schema: dbo #Set value
                 jdbc:
                     time_zone: UTC
+
+scheduled_tasks:
+    syncro:
+        initial_delay: 10000
+        fixed_delay: 600000
+
 server:
     port: 8080
 

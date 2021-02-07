@@ -34,7 +34,7 @@ public class PlayerOverallTableSyncroScheduledTask {
         this.systemTimeContext = systemTimeContext;
     }
 
-    @Scheduled(fixedDelay = 18000, initialDelay = 5000)
+    @Scheduled(fixedDelayString = "${scheduled_tasks.syncro.fixed_delay}", initialDelayString = "${scheduled_tasks.syncro.initial_delay}")
     public void run() {
         logger.info("Checking necessity of RSC Vanilla overall table synchronization.");
 

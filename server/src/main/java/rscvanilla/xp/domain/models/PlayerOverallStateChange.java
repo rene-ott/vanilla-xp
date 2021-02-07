@@ -17,7 +17,7 @@ public class PlayerOverallStateChange {
 
     public boolean isNotAvailable() { return previous == null; }
 
-    public Integer getRankChange() { return isNotAvailable() ? null :  current.getRank() - previous.getRank(); }
+    public Integer getRankChange() { return isNotAvailable() ? null :  previous.getRank() - current.getRank(); }
     public Integer getRankCurrent() { return current.getRank(); }
     public Integer getRankPrevious() { return isNotAvailable() ? null : previous.getRank(); }
 

@@ -5,13 +5,19 @@ spring:
         url: jdbc:postgresql://localhost:5432/postgres
     jpa:
         hibernate:
-            ddl-auto: create
+            ddl-auto: none
             dialect: org.hibernate.dialect.PostgreSQLDialect
         properties:
             hibernate:
                 default_schema:
                 jdbc:
                     time_zone: UTC
+
+scheduled_tasks:
+    syncro:
+        initial_delay: 5000
+        fixed_delay: 18000
+
 server:
     port: 8090
 

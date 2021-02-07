@@ -30,7 +30,12 @@
           <td>{{ toLocaleNumber(item.levelCurrent) }}</td>
           <td>{{ item.notAvailable ? "N/A" : toLocaleNumber(item.levelPrevious) }}</td>
 
-          <td>{{ item.notAvailable ? "N/A" : item.rankChange }}</td>
+          <td>
+            {{ item.notAvailable ? "N/A" : item.rankChange }}
+            <template v-if="!item.notAvailable">
+              <rank-arrow-component :rankChange="item.rankChange" />
+            </template>
+          </td>
           <td>{{ item.rankCurrent }}</td>
           <td>{{ item.notAvailable ? "N/A" : item.rankPrevious }}</td>
         </tr>
@@ -118,9 +123,11 @@
 </template>
 
 <script>
+import RankArrowComponent from "./RankArrowComponent";
 import axios from "axios";
 
 export default {
+  components: { RankArrowComponent },
   props: ["daysBeforeToday"],
   name: "PlayerOverallStateChangeTableComponent",
 
