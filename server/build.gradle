@@ -82,7 +82,6 @@ task copyFilesToDirHiearchy(type: Copy) {
 	copy { from "${projectDir}/docker-compose.yml", "${projectDir}/.env" into "${distributionDir}" }
 }
 
-
 test {
 	useJUnitPlatform()
 }

@@ -22,21 +22,17 @@
         <tr v-for="(item, index) in pageChanges" :key="item.playerName">
           <th scope="row">{{ getGlobalRowIndex(index) }}</th>
           <td>{{ item.playerName }}</td>
-
-          <td>{{ toLocaleNumber(item.xpChange) }}</td>
+          <td>{{ item.notAvailable ? "N/A" : toLocaleNumber(item.xpChange) }}</td>
           <td>{{ toLocaleNumber(item.xpCurrent) }}</td>
-          <td>{{ toLocaleNumber(item.xpPrevious) }}</td>
+          <td>{{ item.notAvailable ? "N/A" : toLocaleNumber(item.xpPrevious) }}</td>
 
-          <td>{{ toLocaleNumber(item.levelChange) }}</td>
+          <td>{{ item.notAvailable ? "N/A" : toLocaleNumber(item.levelChange) }}</td>
           <td>{{ toLocaleNumber(item.levelCurrent) }}</td>
-          <td>{{ toLocaleNumber(item.levelPrevious) }}</td>
+          <td>{{ item.notAvailable ? "N/A" : toLocaleNumber(item.levelPrevious) }}</td>
 
-          <td>
-            {{ item.rankChange }}
-            <i class="bi bi-arrow-up"></i>
-          </td>
+          <td>{{ item.notAvailable ? "N/A" : item.rankChange }}</td>
           <td>{{ item.rankCurrent }}</td>
-          <td>{{ item.rankPrevious }}</td>
+          <td>{{ item.notAvailable ? "N/A" : item.rankPrevious }}</td>
         </tr>
       </tbody>
     </table>
@@ -47,14 +43,69 @@
           <a class="page-link" href="#" @click="onPreviousPage()" tabindex="-1">Previous</a>
         </li>
 
+        <li v-if="selectedPageNr - 4 > 0" class="page-item" :class="{ active: false }">
+          <a class="page-link" href="#" @click="onSelectPage(1)">
+            {{ 1 }}
+          </a>
+        </li>
+
+        <li v-if="selectedPageNr - 3 > 0" class="page-item" :class="{ active: false }">
+          <a class="page-link page-link-disabled" href="#">...</a>
+        </li>
+
+        <li v-if="selectedPageNr - 2 > 0" class="page-item" :class="{ active: false }">
+          <a class="page-link" href="#" @click="onSelectPage(selectedPageNr - 2)">
+            {{ selectedPageNr - 2 }}
+          </a>
+        </li>
+
+        <li v-if="selectedPageNr - 1 > 0" class="page-item" :class="{ active: false }">
+          <a class="page-link" href="#" @click="onSelectPage(selectedPageNr - 1)">
+            {{ selectedPageNr - 1 }}
+          </a>
+        </li>
+
+        <li class="page-item" :class="{ active: isActivePage(selectedPageNr) }">
+          <a class="page-link" href="#" @click="onSelectPage(selectedPageNr)">
+            {{ selectedPageNr }}
+          </a>
+        </li>
+
         <li
-          v-for="pageNr in pageCount"
-          :key="pageNr"
+          v-if="selectedPageNr + 1 > 0 && selectedPageNr + 1 < pageCount"
           class="page-item"
-          :class="{ active: isActivePage(pageNr) }"
+          :class="{ active: false }"
         >
-          <a class="page-link" href="#" @click="onSelectPage(pageNr)">
-            {{ pageNr }}
+          <a class="page-link" href="#" @click="onSelectPage(selectedPageNr + 1)">
+            {{ selectedPageNr + 1 }}
+          </a>
+        </li>
+
+        <li
+          v-if="selectedPageNr + 2 > 0 && selectedPageNr + 2 < pageCount"
+          class="page-item"
+          :class="{ active: false }"
+        >
+          <a class="page-link" href="#" @click="onSelectPage(selectedPageNr + 2)">
+            {{ selectedPageNr + 2 }}
+          </a>
+        </li>
+
+        <li
+          v-if="selectedPageNr + 3 > 0 && selectedPageNr + 2 < pageCount"
+          class="page-item"
+          :class="{ active: false }"
+        >
+          <a class="page-link page-link-disabled" href="#">...</a>
+        </li>
+
+        <li
+          v-if="selectedPageNr + 4 > 0 && selectedPageNr + 4 < pageCount"
+          class="page-item"
+          :class="{ active: false }"
+        >
+          <a class="page-link" href="#" @click="onSelectPage(pageCount)">
+            {{ pageCount }}
           </a>
         </li>
 
@@ -180,5 +231,9 @@ export default {
 .pagination > .active > a:hover {
   background-color: #007bff !important;
   border: solid 1px #007bff;
+}
+
+.page-link-disabled {
+  pointer-events: none;
 }
 </style>

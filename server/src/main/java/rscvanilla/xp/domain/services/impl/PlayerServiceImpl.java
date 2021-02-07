@@ -41,7 +41,7 @@ public class PlayerServiceImpl implements PlayerService {
             .sorted(
                 Comparator
                     .comparing(PlayerOverallStateChange::getXpChange, Comparator.nullsLast(Comparator.reverseOrder()))
-                    .thenComparing(PlayerOverallStateChange::getPlayerName)
+                    .thenComparing(PlayerOverallStateChange::getXpCurrent, Comparator.reverseOrder())
             )
             .collect(Collectors.toList());
     }
@@ -76,10 +76,9 @@ public class PlayerServiceImpl implements PlayerService {
             selectedPreviousOverallState = previousOverallStates.get(0);
         }
 
-        if (selectedPreviousOverallState == null || selectedCurrentOverallState == null) {
+        if (selectedPreviousOverallState == null) {
             logger.debug("Player [{}] experience calculation [FAILED].", player.getName());
-            player.clearOverallStates();
-            return PlayerOverallStateChange.createEmpty(player.getName());
+            return PlayerOverallStateChange.createCurrent(player.getName(), selectedCurrentOverallState);
         }
 
         logger.debug("Player [{}] experience calculation [SUCCESS].", player.getName());

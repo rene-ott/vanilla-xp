@@ -1,5 +1,6 @@
 <template>
   <h1 class="mt-5">Vanilla RSC Overall XP Change HiScore</h1>
+  <!--
   <p class="w-50 p-2 border">
     The web application displays
     <a href="https://www.runescapeclassic.org/">RSC Vanilla</a>
@@ -13,6 +14,7 @@
     The data is updated once a day and the last update was:
     <em>2222.02.02</em>
   </p>
+  -->
   <days-before-today-navigation-component class="mt-5" />
 
   <router-view>
