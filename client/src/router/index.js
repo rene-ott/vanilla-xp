@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
 // eslint-disable-next-line max-len
-import PlayerOverallStateChangeTableComponent from "../components/main/PlayerOverallStateChangeTableComponent";
-import NotFoundComponent from "../components/error/NotFoundComponent";
-import App from "../App";
+import PlayerOverallStateChangeTableComponent from "../components/pages/home/components/PlayerOverallStateChangeTableComponent";
+import NotFoundPage from "../components/pages/not-found/NotFoundPage";
+import HomePage from "../components/pages/home/HomePage";
 
 const routerHistory = createWebHistory();
 
@@ -18,7 +18,7 @@ const createDaysBeforeTodayRoute = function (daysBeforeToday) {
 const routes = [
   {
     path: "/days",
-    component: App,
+    component: HomePage,
     children: [
       { path: "/", redirect: { name: "days-1" } },
       { path: "/days", redirect: { name: "days-1" } },
@@ -30,7 +30,7 @@ const routes = [
       createDaysBeforeTodayRoute(30),
     ],
   },
-  { path: "/:pathMatch(.*)*", component: NotFoundComponent },
+  { path: "/:pathMatch(.*)*", component: NotFoundPage },
 ];
 
 const router = createRouter({
