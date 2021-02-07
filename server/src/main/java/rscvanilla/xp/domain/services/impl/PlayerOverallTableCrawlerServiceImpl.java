@@ -34,9 +34,6 @@ public class PlayerOverallTableCrawlerServiceImpl implements PlayerOverallTableC
             htmlDocument = loadDocumentFromURL(playerListTable.getNextPageUrl());
             playerListTable = playerOverallTableParserService.getTable(htmlDocument);
             playerNames.addAll(playerListTable.getRows());
-
-            // TODO: This is temporary
-            return playerNames;
         }
 
         return playerNames;

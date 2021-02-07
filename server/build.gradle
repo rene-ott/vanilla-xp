@@ -29,6 +29,18 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test:2.4.2'
 }
 
+def buildDir = project.buildDir
+def libsDir = "${buildDir}/libs"
+def distributionDir = "${buildDir}/distribution"
+def appDir = "${distributionDir}/app"
+def appConfigDir = "${appDir}/config"
+
+def dbDir = "${distributionDir}/db"
+def dbDataDir = "${dbDir}/data"
+def dbInitDir = "${dbDir}/init"
+
+def jarArchiveName = "app.jar";
+
 task copyClientDistToResources(type: Copy) {
 	dependsOn processResources
 	dependsOn ":client:generateClientDist"
@@ -39,20 +51,35 @@ task copyClientDistToResources(type: Copy) {
 
 bootJar {
 	dependsOn copyClientDistToResources
-	archiveFileName = "server.${archiveExtension.get()}"
-
+	archiveFileName = jarArchiveName
 }
 
-task copyConfig(type: Copy) {
+task createDistDirHiearchy {
 	dependsOn bootJar
-	from "${projectDir}/config"
-	into "${buildDir}/libs/config"
+	delete distributionDir
+	mkdir distributionDir
 
-	exclude "application-dev.yml"
+	mkdir appDir
+	mkdir appConfigDir
+
+	mkdir dbDir
+	mkdir dbDataDir
+	mkdir dbInitDir
 }
 
-task releaseApplication {
-	dependsOn copyConfig
+task copyFilesToDirHiearchy(type: Copy) {
+	dependsOn createDistDirHiearchy
+
+	copy { from "${libsDir}/${jarArchiveName}" into "${appDir}" }
+	copy { from "${projectDir}/dockerfile" into "${appDir}" }
+
+	copy {
+		from "${projectDir}/config/logback.xml", "${projectDir}/config/application-prod.yml" into "${appDir}/config"
+		rename { String fileName -> fileName.replace("-prod", "")}
+	}
+	copy { from "${projectDir}/db/database.sql" into "${dbInitDir}" }
+
+	copy { from "${projectDir}/docker-compose.yml", "${projectDir}/.env" into "${distributionDir}" }
 }
 
 

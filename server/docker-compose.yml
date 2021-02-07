@@ -1,0 +1,37 @@
+version: "3.9"
+services:
+  web:
+    image: "vanilla-xp-app"
+    container_name: vanilla-xp-app
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: ./app/dockerfile
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./app/logs:/app/logs
+      - ./app/config:/app/config
+    depends_on:
+      - "db"
+    networks:
+      - vanilla_xp_network
+  db:
+    image: postgres:13.1-alpine
+    container_name: "vanilla-xp-db"
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: postgres
+    expose:
+      - "5432"
+    ports:
+      - "6000:5432"
+    volumes:
+      - ./db/data:/var/lib/postgresql/data
+      - ./db/init/database.sql:/docker-entrypoint-initdb.d/database.sql
+    networks:
+      - vanilla_xp_network
+      
+networks:
+  vanilla_xp_network:
+    driver: bridge

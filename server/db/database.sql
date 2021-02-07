@@ -1,10 +1,9 @@
 /* First create database with superuser */
 CREATE DATABASE vanilla_xp;
 
-
-
 /* Connect to the database and create schema with objects */
-DROP SCHEMA IF EXISTS dbo CASCADE;
+\connect vanilla_xp
+
 CREATE SCHEMA dbo;
 
 CREATE SEQUENCE dbo.hibernate_sequence
@@ -49,10 +48,8 @@ ALTER TABLE ONLY dbo.syncro_result ADD CONSTRAINT pk__syncro_result__id PRIMARY 
 ALTER TABLE ONLY dbo.player ADD CONSTRAINT uk__player__name UNIQUE (name);
 ALTER TABLE ONLY dbo.player_overall_state ADD CONSTRAINT fk__player_overall_state__player_id FOREIGN KEY (player_id) REFERENCES dbo.player(id);
 
-
-
 /* Create user with grants */
-CREATE USER vanilla_xp_app WITH PASSWORD 'vanilla_xp_app_password'
+CREATE USER vanilla_xp_app WITH PASSWORD 'vanilla_xp_app_password';
 GRANT USAGE ON SCHEMA dbo TO vanilla_xp_app;
 GRANT ALL PRIVILEGES ON DATABASE vanilla_xp to vanilla_xp_app;
 GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA dbo TO vanilla_xp_app;
