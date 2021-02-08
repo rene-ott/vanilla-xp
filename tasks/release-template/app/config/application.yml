@@ -1,0 +1,25 @@
+spring:
+    datasource:
+        username: vanilla_xp_app
+        password: vanilla_xp_app_password
+        url: jdbc:postgresql://db:5432/vanilla_xp
+    jpa:
+        hibernate:
+            ddl-auto: none
+            dialect: org.hibernate.dialect.PostgreSQLDialect
+        properties:
+            hibernate:
+                default_schema: dbo
+                jdbc:
+                    time_zone: UTC
+
+scheduled_tasks:
+    syncro:
+        initial_delay: 10000
+        fixed_delay: 600000
+
+server:
+    port: 8080
+
+logging:
+    config: file:./config/logback.xml

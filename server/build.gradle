@@ -29,16 +29,11 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test:2.4.2'
 }
 
+def tasksDir = "${rootDir}/tasks"
+def outDir = "${tasksDir}/out"
+
 def buildDir = project.buildDir
 def libsDir = "${buildDir}/libs"
-def distributionDir = "${buildDir}/distribution"
-def appDir = "${distributionDir}/app"
-def appConfigDir = "${appDir}/config"
-
-def dbDir = "${distributionDir}/db"
-def dbDataDir = "${dbDir}/data"
-def dbInitDir = "${dbDir}/init"
-
 def jarArchiveName = "app.jar";
 
 task copyClientDistToResources(type: Copy) {
@@ -54,32 +49,31 @@ bootJar {
 	archiveFileName = jarArchiveName
 }
 
-task createDistDirHiearchy {
+task createOutDir(type: Delete) {
 	dependsOn bootJar
-	delete distributionDir
-	mkdir distributionDir
-
-	mkdir appDir
-	mkdir appConfigDir
-
-	mkdir dbDir
-	mkdir dbDataDir
-	mkdir dbInitDir
+	mkdir outDir
 }
 
-task copyFilesToDirHiearchy(type: Copy) {
-	dependsOn createDistDirHiearchy
+task copyReleaseTemplateToDistDir {
+	dependsOn createOutDir
+	copy { from "${tasksDir}/release-template" into "${outDir}/dist" }
+}
 
-	copy { from "${libsDir}/${jarArchiveName}" into "${appDir}" }
-	copy { from "${projectDir}/dockerfile" into "${appDir}" }
+task copyAppJarToOutDir {
+	dependsOn copyReleaseTemplateToDistDir
+	copy { from "${libsDir}/${jarArchiveName}" into "${tasksDir}/release-template/app" }
+}
 
-	copy {
-		from "${projectDir}/config/logback.xml", "${projectDir}/config/application-prod.yml" into "${appDir}/config"
-		rename { String fileName -> fileName.replace("-prod", "")}
-	}
-	copy { from "${projectDir}/db/database.sql" into "${dbInitDir}" }
+task packageDist(type: Zip) {
+	dependsOn copyAppJarToOutDir
+	archiveFileName = "dist.zip"
+	destinationDirectory = file("$outDir")
 
-	copy { from "${projectDir}/docker-compose.yml", "${projectDir}/.env" into "${distributionDir}" }
+	from "$outDir/dist"
+}
+
+task releaseDist {
+	dependsOn packageDist
 }
 
 test {
