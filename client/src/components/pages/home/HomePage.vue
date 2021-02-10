@@ -15,15 +15,33 @@
     <em>2222.02.02</em>
   </p>
   -->
-  <days-before-today-navigation-component class="mt-5" />
-  <router-view />
+  <p><syncro-result-component /></p>
+  <days-before-today-navigation-component
+    :isNavigationDisabled="isNavigationDisabled"
+    class="mt-5"
+  />
+  <router-view v-on:onDataLoading="onDataLoading" v-on:onDataLoaded="onDataLoaded" />
 </template>
 
 <script>
 import DaysBeforeTodayNavigationComponent from "./components/DaysBeforeTodayNavigationComponent";
+import SyncroResultComponent from "./components/SyncroResultComponent";
 
 export default {
-  components: { DaysBeforeTodayNavigationComponent },
+  components: { DaysBeforeTodayNavigationComponent, SyncroResultComponent },
   name: "HomePage",
+  data: function () {
+    return {
+      isNavigationDisabled: true,
+    };
+  },
+  methods: {
+    onDataLoading: function () {
+      this.isNavigationDisabled = true;
+    },
+    onDataLoaded: function () {
+      this.isNavigationDisabled = false;
+    },
+  },
 };
 </script>
