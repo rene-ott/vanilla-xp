@@ -4,8 +4,7 @@
 
 Vanilla XP is an application which tracks RSC Vanilla player hiscore total XP changes over 1, 2, 3, 7, 14, 30 days. RSC Vanilla is a Runescape Classic dedicated private server. This application will provide indication about player activity in the server by crawling data every day from the hiscore and calculating the difference from previous day(s) and displaying the results.
 
-![Alt text](example.gif "Title")
-
+![Demo](demo.gif "Demo")
 
 ## Overview
 The root directory contains server side (server) and client side (client) projects.
