@@ -26,6 +26,9 @@ To run project locally in docker you need to create release (dist folder). The r
 - dist/app/config/logback.xml - App logger settings
 - dist/proxy/config/nginx.config - Proxy settings
 
+#### Requirements
+ - NodeJS v14 - Necessary to install node packages & build prod client
+
 #### Steps
 1. Create release folder to `./tasks/out/dist`
    -- Run gradle task `./gradlew release` or execute `./tasks/release.sh` script which will invoke the gradle task.
@@ -40,7 +43,9 @@ To run project locally in docker you need to create release (dist folder). The r
 - [S] Fix [warn](https://stackoverflow.com/questions/30549489/what-is-this-spring-jpa-open-in-view-true-property-in-spring-boot)
 - [S] Add packages into modules.
 - [S] Move bean definitions out from Application.java
+- [S] Add profile prod and when starting in that profile catch db connection exception and log friendly message.
 - [C] Add exception handling with notifications for ajax request.
 - [C] Add transitions to improve UX.
+- [C] Add text "Missing data" to table when first syncro result and data is missing.
 - [C] Refaktor code to use provide/inject dependencies.
 - [T] Add section `Getting Started -> Develop locally` section to README.MD 

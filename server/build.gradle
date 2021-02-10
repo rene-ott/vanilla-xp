@@ -49,19 +49,24 @@ bootJar {
 	archiveFileName = jarArchiveName
 }
 
-task createOutDir(type: Delete) {
+task rmDir(type: Delete) {
 	dependsOn bootJar
+	delete outDir
+}
+
+task createOutDir {
+	dependsOn rmDir
 	mkdir outDir
 }
 
-task copyReleaseTemplateToDistDir {
+task copyReleaseTemplateToDistDir(type: Copy) {
 	dependsOn createOutDir
-	copy { from "${tasksDir}/release-template" into "${outDir}/dist" }
+	from "${tasksDir}/release-template" into "${outDir}/dist"
 }
 
-task copyAppJarToOutDir {
+task copyAppJarToOutDir(type: Copy) {
 	dependsOn copyReleaseTemplateToDistDir
-	copy { from "${libsDir}/${jarArchiveName}" into "${outDir}/dist/app" }
+	from "${libsDir}/${jarArchiveName}" into "${outDir}/dist/app"
 }
 
 task packageDist(type: Zip) {
