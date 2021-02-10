@@ -1,6 +1,11 @@
 group 'rscvanilla.xp'
 version '0.0.1'
 
+task npmInstall(type: Exec) {
+    commandLine "npm.cmd", "install"
+}
+
 task generateClientDist(type: Exec) {
+	dependsOn npmInstall
     commandLine "npx.cmd", "vue-cli-service",  "build"
 }
