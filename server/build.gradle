@@ -61,7 +61,7 @@ task copyReleaseTemplateToDistDir {
 
 task copyAppJarToOutDir {
 	dependsOn copyReleaseTemplateToDistDir
-	copy { from "${libsDir}/${jarArchiveName}" into "${tasksDir}/release-template/app" }
+	copy { from "${libsDir}/${jarArchiveName}" into "${outDir}/dist/app" }
 }
 
 task packageDist(type: Zip) {

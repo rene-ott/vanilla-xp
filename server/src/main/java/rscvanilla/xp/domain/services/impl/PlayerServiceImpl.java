@@ -42,6 +42,7 @@ public class PlayerServiceImpl implements PlayerService {
                 Comparator
                     .comparing(PlayerOverallStateChange::getXpChange, Comparator.nullsLast(Comparator.reverseOrder()))
                     .thenComparing(PlayerOverallStateChange::getXpCurrent, Comparator.reverseOrder())
+                    .thenComparing(PlayerOverallStateChange::getPlayerName, Comparator.reverseOrder())
             )
             .collect(Collectors.toList());
     }

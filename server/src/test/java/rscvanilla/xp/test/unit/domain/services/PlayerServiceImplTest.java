@@ -56,7 +56,7 @@ public class PlayerServiceImplTest {
 
     }
 
-    @DisplayName("Tests if new players return empty change. Orders them by name if both have equal createdAt.")
+    @DisplayName("Tests if new players return empty change. Orders them by xp if both have equal createdAt.")
     @Test
     public void getPlayerOverallStateChangesWithDaysBefore1_TwoNewPlayers_Returns2EmptyChanges() {
         var firstPlayer = createFirstPlayer();
@@ -68,17 +68,17 @@ public class PlayerServiceImplTest {
         secondPlayer.addState(secondPlayerState);
 
         when(systemTime.currentDate()).thenReturn(TODAY_DATE);
-        when(playerRepository.findAll()).thenReturn(listOf(secondPlayer, firstPlayer));
+        when(playerRepository.findAll()).thenReturn(listOf(firstPlayer, secondPlayer));
 
         var changes = playerService.getPlayerOverallStateChanges(1);
         assertThat(changes.size()).isEqualTo(2);
 
         var firstChange = changes.get(0);
-        assertThat(firstChange.getPlayerName()).isEqualTo(PLAYER_1);
+        assertThat(firstChange.getPlayerName()).isEqualTo(PLAYER_2);
         assertThat(firstChange.isNotAvailable()).isTrue();
 
         var secondChange = changes.get(1);
-        assertThat(secondChange.getPlayerName()).isEqualTo(PLAYER_2);
+        assertThat(secondChange.getPlayerName()).isEqualTo(PLAYER_1);
         assertThat(secondChange.isNotAvailable()).isTrue();
     }
 

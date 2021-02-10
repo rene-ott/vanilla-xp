@@ -1,3 +1,0 @@
-- Handle exceptions + Add component to pop up them
-- Redirect to NotFound component when wrong path
-- If row N/A then span over multiple columns.
